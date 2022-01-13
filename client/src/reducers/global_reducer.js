@@ -1,18 +1,6 @@
-import { LOAD, LOADED, SHOW_ALERT, HIDE_ALERT } from '../actions';
+import { SHOW_ALERT, HIDE_ALERT, ACTIVATE_LINK } from '../actions';
 
 const global_reducer = (state, action) => {
-  if (action.type === LOAD) {
-    return {
-      ...state,
-      loading: true,
-    };
-  }
-  if (action.type === LOADED) {
-    return {
-      ...state,
-      loading: false,
-    };
-  }
   if (action.type === SHOW_ALERT) {
     return {
       ...state,
@@ -31,6 +19,12 @@ const global_reducer = (state, action) => {
         text: '',
         type: 'danger',
       },
+    };
+  }
+  if (action.type === ACTIVATE_LINK) {
+    return {
+      ...state,
+      activeLink: action.payload,
     };
   }
 

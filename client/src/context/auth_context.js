@@ -1,19 +1,18 @@
-import React, { useEffect, useContext, useReducer } from 'react';
+import React, { useEffect, useContext, useReducer, useState } from 'react';
 import { api } from '../utils/constants';
 import reducer from '../reducers/auth_reducer';
-
-import { GET_USER } from '../actions';
-import { useGlobalContext } from './global_context';
+import { GET_USER, USER_LOADING, USER_VERIFICATION } from '../actions';
 
 const initialState = {
+  isLoading: true,
   user: null,
+  verification: false,
   users: [],
 };
 
 const AuthContext = React.createContext();
 
 const AuthProvider = ({ children }) => {
-  const { loaded } = useGlobalContext();
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const saveUser = (user) => {
@@ -31,7 +30,7 @@ const AuthProvider = ({ children }) => {
     } catch (error) {
       removeUser();
     }
-    // setIsLoading(false);
+    dispatch({ type: USER_LOADING });
   };
 
   const logoutUser = async () => {
@@ -43,16 +42,22 @@ const AuthProvider = ({ children }) => {
     }
   };
 
+  const setVerification = () => {
+    dispatch({ type: USER_VERIFICATION });
+  };
+
   useEffect(() => {
     setTimeout(() => {
       dispatch({ type: GET_USER });
-      loaded(false);
+      dispatch({ type: USER_LOADING });
     }, 2000);
     //fetchUser();
   }, []);
 
   return (
-    <AuthContext.Provider value={{ ...state, saveUser, logoutUser }}>
+    <AuthContext.Provider
+      value={{ ...state, saveUser, logoutUser, setVerification }}
+    >
       {children}
     </AuthContext.Provider>
   );

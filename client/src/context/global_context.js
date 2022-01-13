@@ -1,10 +1,10 @@
-import React, { useEffect, useContext, useReducer } from 'react';
+import React, { useContext, useReducer } from 'react';
 import reducer from '../reducers/global_reducer';
 
-import { LOAD, LOADED, SHOW_ALERT, HIDE_ALERT } from '../actions';
+import { SHOW_ALERT, HIDE_ALERT, ACTIVATE_LINK } from '../actions';
 
 const initialState = {
-  loading: true,
+  activeLink: '',
   alert: {
     show: false,
     text: '',
@@ -21,21 +21,22 @@ const GlobalProvider = ({ children }) => {
     dispatch({ type: SHOW_ALERT, payload: { text, type } });
   };
 
-  const load = () => {
-    dispatch({ type: LOAD });
-  };
-
-  const loaded = () => {
-    dispatch({ type: LOADED });
-  };
-
   const hideAlert = () => {
     dispatch({ type: HIDE_ALERT });
   };
 
+  const activateLink = (name) => {
+    dispatch({ type: ACTIVATE_LINK, payload: name });
+  };
+
   return (
     <GlobalContext.Provider
-      value={{ ...state, load, loaded, showAlert, hideAlert }}
+      value={{
+        ...state,
+        showAlert,
+        hideAlert,
+        activateLink,
+      }}
     >
       {children}
     </GlobalContext.Provider>
