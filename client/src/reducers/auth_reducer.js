@@ -1,11 +1,16 @@
-import { GET_USER, USER_LOADING, USER_VERIFICATION } from '../actions';
+import {
+  GET_USER,
+  USER_LOADING,
+  USER_VERIFICATION,
+  REMOVE_USER,
+} from '../actions';
 
 const user_reducer = (state, action) => {
   if (action.type === GET_USER) {
     console.log('user check');
     return {
       ...state,
-      // do something
+      user: action.payload,
     };
   }
   if (action.type === USER_LOADING) {
@@ -18,6 +23,12 @@ const user_reducer = (state, action) => {
     return {
       ...state,
       verification: true,
+    };
+  }
+  if (action.type === REMOVE_USER) {
+    return {
+      ...state,
+      user: null,
     };
   }
 

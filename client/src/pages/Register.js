@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { FormRow, Links } from '../components';
-import { api } from '../utils/constants';
-import { useState } from 'react';
+import axios from 'axios';
+import { useState, useEffect } from 'react';
 import { useGlobalContext } from '../context/global_context';
 import { useAuthContext } from '../context/auth_context';
 
@@ -26,7 +26,10 @@ const Register = () => {
     const registerNewUser = { name, email, password };
 
     try {
-      const { data } = await api.post('/api/v1/auth/register', registerNewUser);
+      const { data } = await axios.post(
+        '/api/v1/auth/register',
+        registerNewUser
+      );
 
       setValues({ name: '', email: '', password: '' });
       setVerification();
@@ -105,10 +108,6 @@ const Wrapper = styled.section`
   }
   .btn:disabled {
     cursor: not-allowed;
-  }
-
-  input {
-    margin-bottom: 1rem;
   }
 `;
 

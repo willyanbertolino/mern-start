@@ -7,3 +7,4 @@ export const ACTIVATE_LINK = 'ACTIVATE_LINK';
 export const GET_USER = 'GET_USER';
 export const USER_LOADING = 'USER_LOADING';
 export const USER_VERIFICATION = 'USER_VERIFICATION';
+export const REMOVE_USER = 'REMOVE_USER';

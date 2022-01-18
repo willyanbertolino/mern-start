@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
-const bcrypt = require('bcryptjs');
+const argon2 = require('argon2');
 
 const UserSchema = new mongoose.Schema({
   name: {
@@ -8,6 +8,7 @@ const UserSchema = new mongoose.Schema({
     required: [true, 'Name is required.'],
     minlength: 3,
     maxlength: 50,
+    trim: true,
   },
   email: {
     type: String,
@@ -22,6 +23,7 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Password is required.'],
     minlength: 6,
+    select: false,
   },
   role: {
     type: String,
@@ -43,12 +45,12 @@ const UserSchema = new mongoose.Schema({
 });
 
 UserSchema.pre('save', async function () {
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
+  if (!this.isModified('password')) return;
+  this.password = await argon2.hash(this.password);
 });
 
 UserSchema.methods.comparePassword = async function (tryPassword) {
-  const isMatch = await bcrypt.compare(tryPassword, this.password);
+  const isMatch = await argon2.verify(this.password, tryPassword);
   return isMatch;
 };
 

@@ -15,17 +15,22 @@ const register = async (req, res) => {
   const { name, email, password } = req.body;
 
   const verificationToken = crypto.randomBytes(40).toString('hex');
-
-  const user = await User.create({ name, email, password, verificationToken });
-
   const origin = `${process.env.SEND_EMAIL_ORIGIN}`;
 
+  if (!name || !email || !password || password.length < 6) {
+    throw new CustomAPIError.BadRequestError(
+      'Name and email is required and Password must have 6 or more characters!'
+    );
+  }
+
   await sendVerificationEmail({
-    name: user.name,
-    email: user.email,
-    verificationToken: user.verificationToken,
+    name,
+    email,
+    verificationToken,
     origin,
   });
+
+  await User.create({ name, email, password, verificationToken });
 
   res.status(StatusCodes.CREATED).json({
     msg: 'Success! Please check your email to verify account',
@@ -63,17 +68,17 @@ const login = async (req, res) => {
     );
   }
 
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email }).select('+password');
 
   if (!user) {
     throw new CustomAPIError.UnauthenticatedError('Invalid credentials');
   }
 
-  const isPasswordCorrect = await user.comparePassword(password);
-
   if (!user.isVerified) {
     throw new CustomAPIError.UnauthenticatedError('Please verify your email');
   }
+
+  const isPasswordCorrect = await user.comparePassword(password);
 
   if (!isPasswordCorrect) {
     throw new CustomAPIError.UnauthenticatedError('Invalid credentials');
@@ -93,9 +98,10 @@ const login = async (req, res) => {
       throw new CustomAPIError.UnauthenticatedError('Invalid Credentials');
     }
     refreshToken = existingToken.refreshToken;
-    attachCookiesToResponse({ res, user: tokenUser });
 
-    res.status(StatusCodes.OK).json({ user: tokenUser, refreshToken });
+    attachCookiesToResponse({ res, user: tokenUser, refreshToken });
+
+    res.status(StatusCodes.OK).json({ user: tokenUser });
 
     return;
   }
@@ -108,9 +114,9 @@ const login = async (req, res) => {
 
   await Token.create(userToken);
 
-  attachCookiesToResponse({ res, user: tokenUser });
+  attachCookiesToResponse({ res, user: tokenUser, refreshToken });
 
-  res.status(StatusCodes.OK).json({ user: tokenUser, refreshToken });
+  res.status(StatusCodes.OK).json({ user: tokenUser });
 };
 
 const logout = async (req, res) => {

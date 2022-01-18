@@ -1,9 +1,9 @@
 import { Navigate, Outlet } from 'react-router-dom';
 
-import { useGlobalContext } from '../context/global_context';
+import { useAuthContext } from '../context/auth_context';
 
 const PrivateRoute = () => {
-  const { user } = useGlobalContext();
+  const { user } = useAuthContext();
 
   return user ? <Outlet /> : <Navigate to="/" />;
 };

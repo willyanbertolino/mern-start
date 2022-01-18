@@ -31,9 +31,7 @@ ReactDOM.render(
               <Route path="register" element={<Register />} />
               <Route path="user/verify-email" element={<Verify />} />
               <Route path="private" element={<PrivateRoute />}>
-                <Route path="users" element={<Users />}>
-                  <Route path=":userId" element={<User />} />
-                </Route>
+                <Route path="user/:userId" element={<User />} />
                 <Route path="dashboard" element={<Dashboard />} />
                 <Route path="admin" element={<Admin />} />
               </Route>

@@ -1,13 +1,19 @@
-import React, { useEffect, useContext, useReducer, useState } from 'react';
-import { api } from '../utils/constants';
+import React, { useEffect, useContext, useReducer } from 'react';
+import axios from 'axios';
 import reducer from '../reducers/auth_reducer';
-import { GET_USER, USER_LOADING, USER_VERIFICATION } from '../actions';
+// import { useCookies } from 'react-cookie';
+
+import {
+  GET_USER,
+  USER_LOADING,
+  USER_VERIFICATION,
+  REMOVE_USER,
+} from '../actions';
 
 const initialState = {
   isLoading: true,
   user: null,
   verification: false,
-  users: [],
 };
 
 const AuthContext = React.createContext();
@@ -16,16 +22,16 @@ const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const saveUser = (user) => {
-    // setUser(user);
+    dispatch({ type: GET_USER, payload: user });
   };
 
   const removeUser = () => {
-    // setUser(null);
+    dispatch({ type: REMOVE_USER });
   };
 
   const fetchUser = async () => {
     try {
-      const { data } = await api.get('/api/v1/users/current');
+      const { data } = await axios.get(`/api/v1/users/showMe`);
       saveUser(data.user);
     } catch (error) {
       removeUser();
@@ -33,12 +39,14 @@ const AuthProvider = ({ children }) => {
     dispatch({ type: USER_LOADING });
   };
 
+  console.log(state);
+
   const logoutUser = async () => {
     try {
-      await api.delete('/api/v1/auth/logout');
+      await axios.delete('/api/v1/auth/logout');
       removeUser();
     } catch (error) {
-      console.log(error);
+      console.log(error.response);
     }
   };
 
@@ -47,11 +55,7 @@ const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    setTimeout(() => {
-      dispatch({ type: GET_USER });
-      dispatch({ type: USER_LOADING });
-    }, 2000);
-    //fetchUser();
+    fetchUser();
   }, []);
 
   return (

@@ -9,7 +9,6 @@ const Navbar = () => {
   const { user, verification } = useAuthContext();
   const { activeLink } = useGlobalContext();
 
-  console.log(activeLink);
   return (
     <Wrapper>
       <nav className="navbar">
@@ -26,7 +25,7 @@ const Navbar = () => {
                 className={activeLink === 'dashboard' ? 'active' : null}
               />
               <Links
-                path={`/private/users/${user.id}`}
+                path={`/private/user/${user.userId}`}
                 name="myAccount"
                 className={activeLink === 'myAccount' ? 'active' : null}
               />

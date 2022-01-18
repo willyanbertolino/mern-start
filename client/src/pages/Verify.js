@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { api } from '../utils/constants';
+import axios from 'axios';
 import { useAuthContext } from '../context/auth_context';
 import { Loading, Error, Links } from '../components';
 
@@ -18,7 +18,7 @@ const Verify = () => {
   const verifyToken = async () => {
     setLoading(true);
     try {
-      await api.post('/api/v1/auth/verify-email', {
+      await axios.post('/api/v1/auth/verify-email', {
         verificationToken: query.get('token'),
         email: query.get('email'),
       });
