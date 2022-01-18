@@ -39,8 +39,6 @@ const AuthProvider = ({ children }) => {
     dispatch({ type: USER_LOADING });
   };
 
-  console.log(state);
-
   const logoutUser = async () => {
     try {
       await axios.delete('/api/v1/auth/logout');
@@ -50,8 +48,8 @@ const AuthProvider = ({ children }) => {
     }
   };
 
-  const setVerification = () => {
-    dispatch({ type: USER_VERIFICATION });
+  const setVerification = (value) => {
+    dispatch({ type: USER_VERIFICATION, payload: value });
   };
 
   useEffect(() => {

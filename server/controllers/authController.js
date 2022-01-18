@@ -10,16 +10,23 @@ const {
   createHash,
 } = require('../utils');
 const crypto = require('crypto');
+const origin = `${process.env.SEND_EMAIL_ORIGIN}`;
 
 const register = async (req, res) => {
   const { name, email, password } = req.body;
 
   const verificationToken = crypto.randomBytes(40).toString('hex');
-  const origin = `${process.env.SEND_EMAIL_ORIGIN}`;
 
   if (!name || !email || !password || password.length < 6) {
     throw new CustomAPIError.BadRequestError(
       'Name and email is required and Password must have 6 or more characters!'
+    );
+  }
+
+  const user = await User.findOne({ email });
+  if (user) {
+    throw new CustomAPIError.BadRequestError(
+      'You already have an account, please login!'
     );
   }
 
@@ -71,7 +78,9 @@ const login = async (req, res) => {
   const user = await User.findOne({ email }).select('+password');
 
   if (!user) {
-    throw new CustomAPIError.UnauthenticatedError('Invalid credentials');
+    throw new CustomAPIError.UnauthenticatedError(
+      'There is no user registered with this email'
+    );
   }
 
   if (!user.isVerified) {
@@ -81,7 +90,7 @@ const login = async (req, res) => {
   const isPasswordCorrect = await user.comparePassword(password);
 
   if (!isPasswordCorrect) {
-    throw new CustomAPIError.UnauthenticatedError('Invalid credentials');
+    throw new CustomAPIError.UnauthenticatedError('Password Incorrect');
   }
 
   const tokenUser = createTokenUser(user);
@@ -137,17 +146,16 @@ const logout = async (req, res) => {
 const forgotPassword = async (req, res) => {
   const { email } = req.body;
 
-  if (!email) {
+  const user = await User.findOne({ email });
+
+  if (!email || !user) {
     throw new CustomAPIError.BadRequestError('Please provide valid email');
   }
-
-  const user = await User.findOne({ email });
 
   if (user) {
     const passwordToken = crypto.randomBytes(70).toString('hex');
 
     // send email
-    const origin = 'http://localhost:3000';
     await sendResetPasswordEmail({
       name: user.name,
       email: user.email,

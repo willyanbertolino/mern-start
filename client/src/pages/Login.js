@@ -106,10 +106,6 @@ const Wrapper = styled.section`
     text-align: center;
   }
 
-  h4 {
-    text-align: center;
-  }
-
   p {
     margin: 0;
     text-align: center;

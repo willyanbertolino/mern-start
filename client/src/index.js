@@ -13,7 +13,7 @@ import {
   Login,
   Register,
   Verify,
-  Users,
+  ForgotPassword,
   User,
   Admin,
   Dashboard,
@@ -29,6 +29,7 @@ ReactDOM.render(
               <Route index element={<Home />} />
               <Route path="login" element={<Login />} />
               <Route path="register" element={<Register />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="user/verify-email" element={<Verify />} />
               <Route path="private" element={<PrivateRoute />}>
                 <Route path="user/:userId" element={<User />} />

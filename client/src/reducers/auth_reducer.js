@@ -22,7 +22,7 @@ const user_reducer = (state, action) => {
   if (action.type === USER_VERIFICATION) {
     return {
       ...state,
-      verification: true,
+      verification: action.payload,
     };
   }
   if (action.type === REMOVE_USER) {

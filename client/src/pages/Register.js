@@ -24,6 +24,7 @@ const Register = () => {
 
     const { name, email, password } = values;
     const registerNewUser = { name, email, password };
+    setVerification(false);
 
     try {
       const { data } = await axios.post(
@@ -32,7 +33,7 @@ const Register = () => {
       );
 
       setValues({ name: '', email: '', password: '' });
-      setVerification();
+      setVerification(true);
       showAlert({ text: data.msg, type: 'success' });
     } catch (error) {
       const { msg } = error.response.data;
