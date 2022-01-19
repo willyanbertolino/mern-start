@@ -14,6 +14,7 @@ import {
   Register,
   Verify,
   ForgotPassword,
+  ResetPassword,
   User,
   Admin,
   Dashboard,
@@ -31,6 +32,7 @@ ReactDOM.render(
               <Route path="register" element={<Register />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="user/verify-email" element={<Verify />} />
+              <Route path="user/reset-password" element={<ResetPassword />} />
               <Route path="private" element={<PrivateRoute />}>
                 <Route path="user/:userId" element={<User />} />
                 <Route path="dashboard" element={<Dashboard />} />

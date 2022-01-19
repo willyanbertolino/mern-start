@@ -179,26 +179,43 @@ const forgotPassword = async (req, res) => {
 const resetPassword = async (req, res) => {
   const { token, email, password } = req.body;
 
-  if (!token || !password || !email) {
-    throw new CustomAPIError.BadRequestError('Please provide all values');
+  if (!password) {
+    throw new CustomAPIError.BadRequestError('Please enter new password');
   }
 
   const user = await User.findOne({ email });
 
+  if (!user) {
+    throw new CustomAPIError.BadRequestError(
+      `The user with email ${email} is not registered`
+    );
+  }
+
+  console.log(user);
+
   if (user) {
     const currentDate = new Date();
 
-    if (
-      user.passwordToken === createHash(token) &&
-      user.passwordTokenExpirationDate > currentDate
-    ) {
-      user.password = password;
-      user.passwordToken = null;
-      user.passwordTokenExpirationDate = null;
-
-      await user.save();
+    if (user.passwordTokenExpirationDate <= currentDate) {
+      throw new CustomAPIError.BadRequestError(
+        'token expired, please request new confirmation email again'
+      );
     }
+
+    if (user.passwordToken !== createHash(token)) {
+      throw new CustomAPIError.BadRequestError(
+        'invalid token, please request new confirmation email again'
+      );
+    }
+
+    user.password = password;
+    user.passwordToken = null;
+    user.passwordTokenExpirationDate = null;
+
+    await user.save();
   }
+
+  res.send('password reseted');
 };
 
 module.exports = {

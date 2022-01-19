@@ -9,6 +9,7 @@ import User from './User';
 import Admin from './Admin';
 import Dashboard from './Dashboard';
 import ForgotPassword from './ForgotPassword';
+import ResetPassword from './ResetPassword';
 
 export {
   Home,
@@ -18,6 +19,7 @@ export {
   Register,
   Verify,
   ForgotPassword,
+  ResetPassword,
   Users,
   User,
   Admin,
