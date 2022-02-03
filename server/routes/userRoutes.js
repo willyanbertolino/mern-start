@@ -16,8 +16,7 @@ const {
 router
   .route('/')
   .get(authenticateUser, authorizePermissions('admin'), getAllUsers);
-router.route('/showMe').get(authenticateUser, showCurrentUser);
-
+router.route('/getCurrentUser').get(authenticateUser, showCurrentUser);
 router.route('/updateUser').patch(authenticateUser, updateUser);
 router.route('/updateUserPassword').patch(authenticateUser, updateUserPassword);
 

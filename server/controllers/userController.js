@@ -30,17 +30,29 @@ const showCurrentUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  const { email, name } = req.body;
+  const { id, field, value } = req.body;
+  console.log(req.body);
 
-  if (!email || !name) {
-    throw new CustomAPIError.BadRequestError('Please provide name and email.');
+  if (!id || !field || !value) {
+    throw new CustomAPIError.BadRequestError(
+      'Please provide correct credentials.'
+    );
   }
 
   const user = await User.findOneAndUpdate(
-    { _id: req.user.userId },
-    { name, email },
+    { _id: id },
+    { [field]: value },
     { new: true, runValidators: true }
   );
+
+  if (field === 'email') {
+    await sendVerificationEmail({
+      name,
+      email,
+      verificationToken,
+      origin,
+    });
+  }
 
   const tokenUser = createTokenUser(user);
 

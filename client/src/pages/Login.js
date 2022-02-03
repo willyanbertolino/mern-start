@@ -42,7 +42,7 @@ function Login() {
     }
   }
 
-  const onSubmit = async (e) => {
+  const onSubmit = (e) => {
     e.preventDefault();
     loginRequest();
   };
